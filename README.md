@@ -16,17 +16,4 @@ Note: If you do not have docker, this is an easy and fast way to get a redis. No
 
 ##### Here is a flow to represent the demo steps.
 
-```flow
-st=>start: Some people try to have a dinner at 1 table
-haveSeat=>operation: Try to have a seat (acquire a lock)
-tryGetLock=>condition: Successful, Yes or No?
-canWait=>condition: Can I wait, Yes or No?
-releaseLock=>operation: Try to release the lock 
-e=>end: Print to get a food or not
-
-st->haveSeat->tryGetLock->releaseLock->e
-tryGetLock(yes)->releaseLock
-tryGetLock(no)->canWait
-canWait(yes)->haveSeat
-canWait(no)->e
-```
+![](https://raw.githubusercontent.com/19balazs86/PlayingWithDistributedLock/master/Flowchart.JPG)
