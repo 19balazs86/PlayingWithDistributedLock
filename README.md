@@ -16,4 +16,4 @@ Note: If you do not have docker, this is an easy and fast way to get a redis. No
 
 ##### Here is a flow to represent the demo steps.
 
-![](https://raw.githubusercontent.com/19balazs86/PlayingWithDistributedLock/master/Flowchart.JPG)
+![Flowchart](Flowchart.JPG)
