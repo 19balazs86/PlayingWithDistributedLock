@@ -17,11 +17,9 @@ namespace PlayingWithDistributedLock
     public static void Main(string[] args)
     {
       using (ILockObject lockObject = _lockFactory.AcquireLock(_lockKey))
-      {
         Console.WriteLine($"Did I get a lock? -> {lockObject.IsAcquired}");
-      }
 
-      // The dinner is ready.
+      // The dinner is done.
       Parallel.For(0, 5, x => personEat(x));
 
       Console.WriteLine("End of the dinner.");
@@ -48,7 +46,7 @@ namespace PlayingWithDistributedLock
 
       if (lockObject.IsAcquired)
       {
-        // Here we got a lock.
+        // We got a lock.
         Console.WriteLine($"{person} begin eat food.");
 
         Thread.Sleep(1000);
@@ -56,7 +54,7 @@ namespace PlayingWithDistributedLock
         // Try to release the lock.
         if (_random.NextDouble() < 0.8)
         {
-          lockObject.Dispose();
+          lockObject.Release();
 
           Console.WriteLine($"{person} released the lock.");
         }

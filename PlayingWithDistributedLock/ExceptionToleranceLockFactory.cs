@@ -49,9 +49,16 @@ namespace PlayingWithDistributedLock
     {
       public bool IsAcquired => true;
 
-      public void Dispose()
+      public bool Release()
       {
         Console.WriteLine("Release the DummyLockObject.");
+
+        return true;
+      }
+
+      public void Dispose()
+      {
+        Release();
       }
     }
   }

@@ -13,20 +13,20 @@ namespace PlayingWithDistributedLock
 
     public ILockObject AcquireLock(string key, TimeSpan expiration)
     {
-      string guid = Guid.NewGuid().ToString();
+      string value = Guid.NewGuid().ToString();
 
       bool isSuccess;
 
       try
       {
-        isSuccess = _database.StringSet(key, guid, expiration, When.NotExists);
+        isSuccess = _database.StringSet(key, value, expiration, When.NotExists);
       }
       catch (Exception ex)
       {
         throw new LockFactoryException("Failed to acquire a lock.", ex);
       }
 
-      return isSuccess ? new LockObject(this, KeyValuePair.Create(key, guid)) : new LockObject();
+      return isSuccess ? new LockObject(this, key, value) : new LockObject();
     }
 
     public ILockObject AcquireLock(string key)
@@ -34,23 +34,14 @@ namespace PlayingWithDistributedLock
       return AcquireLock(key, TimeSpan.FromSeconds(5));
     }
 
-    private bool releaseLock(string key)
-    {
-      try
-      {
-        _database.KeyDelete(key);
+    // This is not a proper release. We can release a lock, which is using by someone else.
+    //private bool releaseLock(string key)
+    //{
+    //  _database.KeyDelete(key);
 
-        return true;
-      }
-      catch (Exception ex)
-      {
-        throw new LockFactoryException("Failed to release the lock.", ex);
-      }
-    }
+    //  return true;
+    //}
 
-    /// <summary>
-    /// We do not need this in our case. LockObject responsible to release the lock, which is internally.
-    /// </summary>
     private bool releaseLock(string key, string value)
     {
       // Use Lua script to execute GET and DEL command at a time.
@@ -64,18 +55,14 @@ namespace PlayingWithDistributedLock
           return false;
         end";
 
-      RedisResult result;
-
       try
       {
-        result = _database.ScriptEvaluate(script, new RedisKey[] { key }, new RedisValue[] { value });
+        return (bool) _database.ScriptEvaluate(script, new RedisKey[] { key }, new RedisValue[] { value });
       }
       catch (Exception ex)
       {
         throw new LockFactoryException("Failed to release the lock.", ex);
       }
-
-      return (bool) result;
     }
 
     /// <summary>
@@ -83,29 +70,39 @@ namespace PlayingWithDistributedLock
     /// </summary>
     internal class LockObject : ILockObject
     {
-      public bool IsAcquired { get; internal set; }
+      public bool IsAcquired => _lockFactory != null;
 
-      private readonly RedisDistLockFactory _lockFactory;
+      private RedisDistLockFactory _lockFactory;
       private readonly KeyValuePair<string, string> _keyValue;
 
       internal LockObject()
       {
-        IsAcquired = false;
+        // We did not get a lock in this case.
       }
 
-      internal LockObject(RedisDistLockFactory lockFactory, KeyValuePair<string, string> keyValue)
+      internal LockObject(RedisDistLockFactory lockFactory, string key, string value)
       {
         _lockFactory = lockFactory;
-        _keyValue    = keyValue;
-        IsAcquired   = true;
+        _keyValue    = KeyValuePair.Create(key, value);
+      }
+
+      public bool Release()
+      {
+        if (!IsAcquired) return false;
+
+        try
+        {
+          return _lockFactory.releaseLock(_keyValue.Key, _keyValue.Value);
+        }
+        finally
+        {
+          _lockFactory = null; // No need to release it more times.
+        }
       }
 
       public void Dispose()
       {
-        if (!IsAcquired) return;
-
-        //_lockFactory.releaseLock(_keyValue.Key, _keyValue.Value);
-        _lockFactory.releaseLock(_keyValue.Key);
+        Release();
       }
     }
   }
