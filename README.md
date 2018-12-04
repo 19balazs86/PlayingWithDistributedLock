@@ -10,6 +10,8 @@ You can find other .NET solutions on the [official page](https://redis.io/topics
 
 In this example, I used the [observer design pattern](https://docs.microsoft.com/en-us/dotnet/standard/events/observer-design-pattern "observer design pattern") unsubscribe mechanism to release the lock.
 
+I used [the Polly library](https://github.com/App-vNext/Polly "the Polly library") to wait and retry to acquire a lock.
+
 Some inline comments in the code.
 
 ##### Setup a redis server locally on Windows.

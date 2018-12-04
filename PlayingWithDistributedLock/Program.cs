@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Polly;
 
 namespace PlayingWithDistributedLock
 {
@@ -13,7 +15,15 @@ namespace PlayingWithDistributedLock
     private static readonly ILockFactory _lockFactory =
       new ExceptionToleranceLockFactory(new RedisDistLockFactory());
 
+    private static readonly Policy<ILockObject> _waitAndRetryPolicy = Policy
+      .HandleResult<ILockObject>(lo => lo.IsAcquired == false) // If we did not get a lock.
+      .WaitAndRetry(4, // 1 + 4 times retry.
+        _ => TimeSpan.FromMilliseconds(_random.Next(1200, 1500)),
+        (res, ts, ctx) => Console.WriteLine($"{ctx["person"]} is waiting for retry - {ts.TotalMilliseconds} ms."));
 
+    /// <summary>
+    /// Main
+    /// </summary>
     public static void Main(string[] args)
     {
       using (ILockObject lockObject = _lockFactory.AcquireLock(_lockKey))
@@ -28,21 +38,12 @@ namespace PlayingWithDistributedLock
     private static void personEat(int personId)
     {
       string person = $"Person({personId})";
-
-      int retryCount = 0;
-
-      // Try to acquire a lock.
-      ILockObject lockObject = _lockFactory.AcquireLock(_lockKey);
-
-      // Retry to acquire a lock.
-      while (!lockObject.IsAcquired && ++retryCount <= 5)
-      {
-        Console.WriteLine($"{person} is waiting.");
-
-        Thread.Sleep(_random.Next(1200, 1500));
-
-        lockObject = _lockFactory.AcquireLock(_lockKey);
-      }
+      
+      // Try to acquire a lock maximum 5 times.
+      ILockObject lockObject = _waitAndRetryPolicy
+        .Execute(
+          ctx => _lockFactory.AcquireLock(_lockKey),
+          new Dictionary<string, object> { {"person", person} });
 
       if (lockObject.IsAcquired)
       {
