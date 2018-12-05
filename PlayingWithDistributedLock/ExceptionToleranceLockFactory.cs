@@ -3,6 +3,12 @@ using System.Diagnostics;
 
 namespace PlayingWithDistributedLock
 {
+  /// <summary>
+  /// This class is meant to be a wrapper around the RedisDistLockFactory.
+  /// Use it carefully, wisely, because it can make unwanted result!
+  /// If you have a problem with the Redis server. this guy gives you a dummy lock.
+  /// Your business logic can continue to work, thinks that you have a valid lock.
+  /// </summary>
   public class ExceptionToleranceLockFactory : ILockFactory
   {
     private readonly ILockFactory _externalLockFactory;

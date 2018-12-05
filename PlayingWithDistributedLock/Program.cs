@@ -12,6 +12,7 @@ namespace PlayingWithDistributedLock
 
     private const string _lockKey = "lock:eat";
 
+    // Note: Read the description in the ExceptionToleranceLockFactory class.
     private static readonly ILockFactory _lockFactory =
       new ExceptionToleranceLockFactory(new RedisDistLockFactory());
 
