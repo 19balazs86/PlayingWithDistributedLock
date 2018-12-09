@@ -14,7 +14,7 @@ I used [the Polly library](https://github.com/App-vNext/Polly "the Polly library
 
 Some inline comments in the code.
 
-##### Setup a redis server locally on Windows.
+##### Setup a portable redis server on Windows.
 Note: If you do not have docker, this is an easy and fast way to get a redis. No need any installation process.
 1. Download the redis server (zip version) from [MicrosoftArchive/redis/releases](https://github.com/MicrosoftArchive/redis/releases "MicrosoftArchive/redis/releases")
 2. Run the server: redis-server.exe
