@@ -12,7 +12,7 @@ In this example, I used the [observer design pattern](https://docs.microsoft.com
 
 I used the [Polly library](https://github.com/App-vNext/Polly "Polly library") to wait and retry to acquire a lock.
 
-[Distributed caching in ASP.NET Core](https://docs.microsoft.com/en-ie/aspnet/core/performance/caching/distributed?view=aspnetcore-2.2 "Distributed caching in ASP.NET Core") is another useful tool.
+[Distributed caching in ASP.NET Core](https://docs.microsoft.com/en-ie/aspnet/core/performance/caching/distributed?view=aspnetcore-2.2 "Distributed caching in ASP.NET Core") is another useful tool. [EasyCaching Provider.](https://www.c-sharpcorner.com/article/using-easycaching-to-handle-multiple-instance-of-caching-providers "EasyCaching Provider.")
 
 You can find some inline comments in the code.
 
