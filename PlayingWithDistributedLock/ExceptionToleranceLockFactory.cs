@@ -62,10 +62,7 @@ namespace PlayingWithDistributedLock
         return true;
       }
 
-      public void Dispose()
-      {
-        Release();
-      }
+      public void Dispose() => Release();
     }
   }
 }

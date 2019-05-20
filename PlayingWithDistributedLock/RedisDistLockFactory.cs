@@ -11,6 +11,13 @@ namespace PlayingWithDistributedLock
 
     private IDatabase _database => _lazyDatabase.Value;
 
+    /// <summary>
+    /// Acquire a lock object with the given key for the given time.
+    /// </summary>
+    /// <param name="key">Key to lock.</param>
+    /// <param name="expiration">Expiration time.</param>
+    /// <returns>Return an object either the lock is acquired or not.</returns>
+    /// <exception cref="LockFactoryException"></exception>
     public ILockObject AcquireLock(string key, TimeSpan expiration)
     {
       string value = Guid.NewGuid().ToString();
@@ -29,10 +36,14 @@ namespace PlayingWithDistributedLock
       return isSuccess ? new LockObject(this, key, value) : new LockObject();
     }
 
+    /// <summary>
+    /// Acquire a lock object with the given key for 5 seconds.
+    /// </summary>
+    /// <param name="key">Key to lock.</param>
+    /// <returns>Return an object either the lock is acquired or not.</returns>
+    /// <exception cref="LockFactoryException"></exception>
     public ILockObject AcquireLock(string key)
-    {
-      return AcquireLock(key, TimeSpan.FromSeconds(5));
-    }
+      => AcquireLock(key, TimeSpan.FromSeconds(5));
 
     // This is not a proper release. We can release a lock, which is using by someone else.
     //private bool releaseLock(string key)
@@ -100,10 +111,7 @@ namespace PlayingWithDistributedLock
         }
       }
 
-      public void Dispose()
-      {
-        Release();
-      }
+      public void Dispose() => Release();
     }
   }
 }
