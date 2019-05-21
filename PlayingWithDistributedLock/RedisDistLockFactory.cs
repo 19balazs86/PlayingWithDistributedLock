@@ -7,18 +7,16 @@ namespace PlayingWithDistributedLock
 {
   public class RedisDistLockFactory : ILockFactory
   {
-    private readonly Lazy<IDatabase> _lazyDatabase = new Lazy<IDatabase>(()
-      => ConnectionMultiplexer.Connect("localhost:6379").GetDatabase());
+    private readonly Lazy<IDatabase> _lazyDatabase;
 
     private IDatabase _database => _lazyDatabase.Value;
 
-    /// <summary>
-    /// Acquire a lock object with the given key for a given time.
-    /// </summary>
-    /// <param name="key">Key to lock.</param>
-    /// <param name="expiration">Expiration time.</param>
-    /// <returns>Return an object either the lock is acquired or not.</returns>
-    /// <exception cref="LockFactoryException"></exception>
+    public RedisDistLockFactory(string connString = "localhost:6379")
+    {
+      _lazyDatabase = new Lazy<IDatabase>(()
+        => ConnectionMultiplexer.Connect(connString).GetDatabase());
+    }
+
     public ILockObject AcquireLock(string key, TimeSpan expiration)
       => AcquireLock(key, expiration, 0, TimeSpan.Zero);
 
