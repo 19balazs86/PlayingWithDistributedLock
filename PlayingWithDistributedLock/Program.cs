@@ -17,7 +17,7 @@ namespace PlayingWithDistributedLock
       new ExceptionToleranceLockFactory(new RedisDistLockFactory());
 
     private static readonly Policy<ILockObject> _waitAndRetryPolicy = Policy
-      .HandleResult<ILockObject>(lo => lo.IsAcquired == false) // If we did not get a lock.
+      .HandleResult<ILockObject>(lo => lo.IsAcquired == false) // When we did not get a lock.
       .WaitAndRetry(4, // 1 + 4 times retry.
         _ => TimeSpan.FromMilliseconds(_random.Next(1200, 1500)),
         (res, ts, ctx) => Console.WriteLine($"{ctx["person"]} is waiting for retry - {ts.TotalMilliseconds} ms."));

@@ -12,7 +12,7 @@ namespace PlayingWithDistributedLock
     private IDatabase _database => _lazyDatabase.Value;
 
     /// <summary>
-    /// Acquire a lock object with the given key for the given time.
+    /// Acquire a lock object with the given key for a given time.
     /// </summary>
     /// <param name="key">Key to lock.</param>
     /// <param name="expiration">Expiration time.</param>
@@ -30,7 +30,7 @@ namespace PlayingWithDistributedLock
       }
       catch (Exception ex)
       {
-        throw new LockFactoryException("Failed to acquire a lock.", ex);
+        throw new LockFactoryException($"Failed to set the key('{key}') to acquiring a lock.", ex);
       }
 
       return isSuccess ? new LockObject(this, key, value) : new LockObject();
@@ -72,7 +72,7 @@ namespace PlayingWithDistributedLock
       }
       catch (Exception ex)
       {
-        throw new LockFactoryException("Failed to release the lock.", ex);
+        throw new LockFactoryException($"Failed to delete the key('{key}') to release the lock.", ex);
       }
     }
 
@@ -86,10 +86,7 @@ namespace PlayingWithDistributedLock
       private RedisDistLockFactory _lockFactory;
       private readonly KeyValuePair<string, string> _keyValue;
 
-      internal LockObject()
-      {
-        // We did not get a lock in this case.
-      }
+      internal LockObject() { /* We did not get a lock in this case. */ }
 
       internal LockObject(RedisDistLockFactory lockFactory, string key, string value)
       {
@@ -105,13 +102,28 @@ namespace PlayingWithDistributedLock
         {
           return _lockFactory.releaseLock(_keyValue.Key, _keyValue.Value);
         }
+        catch (Exception ex)
+        {
+          throw new LockFactoryException($"Failed to release the lock for the key('{_keyValue.Key}').", ex);
+        }
         finally
         {
           _lockFactory = null; // No need to release it more times.
         }
       }
 
-      public void Dispose() => Release();
+      public void Dispose()
+      {
+        try
+        {
+          Release();
+        }
+        catch (Exception ex)
+        {
+          // Do log.
+          Console.WriteLine(ex.Message);
+        }
+      }
     }
   }
 }
