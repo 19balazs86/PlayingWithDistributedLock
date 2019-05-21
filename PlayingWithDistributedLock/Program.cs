@@ -27,7 +27,7 @@ namespace PlayingWithDistributedLock
     /// </summary>
     public static void Main(string[] args)
     {
-      using (ILockObject lockObject = _lockFactory.AcquireLock(_lockKey))
+      using (ILockObject lockObject = _lockFactory.AcquireLock(_lockKey, TimeSpan.FromSeconds(5)))
         Console.WriteLine($"Did I get a lock? -> {lockObject.IsAcquired}");
 
       // The dinner is done.
@@ -43,7 +43,7 @@ namespace PlayingWithDistributedLock
       // Try to acquire a lock maximum 5 times.
       ILockObject lockObject = _waitAndRetryPolicy
         .Execute(
-          ctx => _lockFactory.AcquireLock(_lockKey),
+          ctx => _lockFactory.AcquireLock(_lockKey, TimeSpan.FromSeconds(5)),
           new Dictionary<string, object> { {"person", person} });
 
       if (lockObject.IsAcquired)

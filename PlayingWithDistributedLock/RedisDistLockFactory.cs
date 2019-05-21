@@ -36,15 +36,6 @@ namespace PlayingWithDistributedLock
       return isSuccess ? new LockObject(this, key, value) : new LockObject();
     }
 
-    /// <summary>
-    /// Acquire a lock object with the given key for 5 seconds.
-    /// </summary>
-    /// <param name="key">Key to lock.</param>
-    /// <returns>Return an object either the lock is acquired or not.</returns>
-    /// <exception cref="LockFactoryException"></exception>
-    public ILockObject AcquireLock(string key)
-      => AcquireLock(key, TimeSpan.FromSeconds(5));
-
     // This is not a proper release. We can release a lock, which is using by someone else.
     //private bool releaseLock(string key)
     //{
