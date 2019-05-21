@@ -19,6 +19,9 @@ namespace PlayingWithDistributedLock
     }
 
     public ILockObject AcquireLock(string key, TimeSpan expiration)
+      => AcquireLock(key, expiration, 0, TimeSpan.Zero);
+
+    public ILockObject AcquireLock(string key, TimeSpan expiration, int retryCount, TimeSpan sleepDuration)
     {
       // For test purpose.
       Stopwatch stopwatch = new Stopwatch();
@@ -26,7 +29,7 @@ namespace PlayingWithDistributedLock
 
       try
       {
-        return _externalLockFactory.AcquireLock(key, expiration);
+        return _externalLockFactory.AcquireLock(key, expiration, retryCount, sleepDuration);
       }
       catch (LockFactoryException ex)
       {

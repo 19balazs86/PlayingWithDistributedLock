@@ -27,8 +27,9 @@ namespace PlayingWithDistributedLock
     /// </summary>
     public static void Main(string[] args)
     {
-      using (ILockObject lockObject = _lockFactory.AcquireLock(_lockKey, TimeSpan.FromSeconds(5)))
-        Console.WriteLine($"Did I get a lock? -> {lockObject.IsAcquired}");
+      using (ILockObject outerLockObject = _lockFactory.AcquireLock(_lockKey, TimeSpan.FromSeconds(3)))
+      using (ILockObject innerLockObject = _lockFactory.AcquireLock(_lockKey, TimeSpan.FromSeconds(5), 2, TimeSpan.FromSeconds(2)))
+        Console.WriteLine($"Did I get a lock? -> {innerLockObject.IsAcquired}");
 
       // The dinner is done.
       Parallel.For(0, 5, x => personEat(x));

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Polly;
 using StackExchange.Redis;
 
 namespace PlayingWithDistributedLock
@@ -19,9 +20,22 @@ namespace PlayingWithDistributedLock
     /// <returns>Return an object either the lock is acquired or not.</returns>
     /// <exception cref="LockFactoryException"></exception>
     public ILockObject AcquireLock(string key, TimeSpan expiration)
+      => AcquireLock(key, expiration, 0, TimeSpan.Zero);
+
+    public ILockObject AcquireLock(string key, TimeSpan expiration, int retryCount, TimeSpan sleepDuration)
     {
+      if (string.IsNullOrWhiteSpace(key))
+        throw new ArgumentException("Key can not be null or empty.");
+
       if (expiration <= TimeSpan.Zero)
-        throw new ArgumentOutOfRangeException("The expiration has to be bigger than zero.");
+        throw new ArgumentOutOfRangeException(nameof(expiration), "Value must be greater than zero.");
+
+      if (retryCount < 0)
+        throw new ArgumentOutOfRangeException(nameof(retryCount), "Value must be greater than or equal to zero.");
+
+      Policy<bool> waitAndRetryPolicy = Policy
+        .HandleResult<bool>(x => x == false)
+        .WaitAndRetry(retryCount, _ => sleepDuration);
 
       string value = Guid.NewGuid().ToString();
 
@@ -29,7 +43,7 @@ namespace PlayingWithDistributedLock
 
       try
       {
-        isSuccess = _database.StringSet(key, value, expiration, When.NotExists);
+        isSuccess = waitAndRetryPolicy.Execute(() => _database.StringSet(key, value, expiration, When.NotExists));
       }
       catch (Exception ex)
       {
