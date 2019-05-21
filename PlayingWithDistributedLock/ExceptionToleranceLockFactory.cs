@@ -28,10 +28,10 @@ namespace PlayingWithDistributedLock
       {
         return _externalLockFactory.AcquireLock(key, expiration);
       }
-      catch (Exception ex)
+      catch (LockFactoryException ex)
       {
         // Log.
-        Console.WriteLine($"We had an error with message: '{ex.Message}'");
+        Console.WriteLine($"External LockFactory error: '{ex.Message}'");
 
         return new DummyLockObject();
       }

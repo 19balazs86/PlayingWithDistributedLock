@@ -20,6 +20,9 @@ namespace PlayingWithDistributedLock
     /// <exception cref="LockFactoryException"></exception>
     public ILockObject AcquireLock(string key, TimeSpan expiration)
     {
+      if (expiration <= TimeSpan.Zero)
+        throw new ArgumentOutOfRangeException("The expiration has to be bigger than zero.");
+
       string value = Guid.NewGuid().ToString();
 
       bool isSuccess;
