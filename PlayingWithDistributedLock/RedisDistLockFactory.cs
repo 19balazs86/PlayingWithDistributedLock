@@ -10,9 +10,22 @@ namespace PlayingWithDistributedLock
 {
   public class RedisDistLockFactory : ILockFactory
   {
+    #region Fields
+    // Use Lua script to execute GET and DEL command at a time.
+    // https://redis.io/commands/eval
+    private static string _releaseLockScript => @"
+        if (redis.call('GET', KEYS[1]) == ARGV[1])
+        then
+          redis.call('DEL', KEYS[1]);
+          return true;
+        else
+          return false;
+        end";
+
     private readonly Lazy<IDatabase> _lazyDatabase;
 
     private IDatabase _database => _lazyDatabase.Value;
+    #endregion
 
     public RedisDistLockFactory(string connString = "localhost:6379")
     {
@@ -102,20 +115,9 @@ namespace PlayingWithDistributedLock
 
     private bool releaseLock(string key, string value)
     {
-      // Use Lua script to execute GET and DEL command at a time.
-      // https://redis.io/commands/eval
-      string script = @"
-        if (redis.call('GET', KEYS[1]) == ARGV[1])
-        then
-          redis.call('DEL', KEYS[1]);
-          return true;
-        else
-          return false;
-        end";
-
       try
       {
-        return (bool) _database.ScriptEvaluate(script, new RedisKey[] { key }, new RedisValue[] { value });
+        return (bool) _database.ScriptEvaluate(_releaseLockScript, new RedisKey[] { key }, new RedisValue[] { value });
       }
       catch (Exception ex)
       {
