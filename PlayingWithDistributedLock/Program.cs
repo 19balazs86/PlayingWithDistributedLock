@@ -25,13 +25,34 @@ namespace PlayingWithDistributedLock
     /// <summary>
     /// Main
     /// </summary>
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
+      // --> #1 AcquireLock with retry.
       using (ILockObject outerLockObject = _lockFactory.AcquireLock(_lockKey, TimeSpan.FromSeconds(3)))
       using (ILockObject innerLockObject = _lockFactory.AcquireLock(_lockKey, TimeSpan.FromSeconds(5), 2, TimeSpan.FromSeconds(2)))
         Console.WriteLine($"Did I get a lock? -> {innerLockObject.IsAcquired}");
 
-      // The dinner is done.
+      // --> #2 AcquireLockAsync with retry.
+      using (ILockObject outerLockObject = await _lockFactory.AcquireLockAsync(_lockKey, TimeSpan.FromSeconds(3)))
+      using (ILockObject innerLockObject = await _lockFactory.AcquireLockAsync(_lockKey, TimeSpan.FromSeconds(5), 2, TimeSpan.FromSeconds(2)))
+        Console.WriteLine($"Did I get a lock? -> {innerLockObject.IsAcquired}");
+
+      // --> #3 AcquireLockAsync with retry + timeout.
+      try
+      {
+        using (CancellationTokenSource ctSource = new CancellationTokenSource(TimeSpan.FromSeconds(3.5)))
+        {
+          using (ILockObject outerLockObject = await _lockFactory.AcquireLockAsync(_lockKey, TimeSpan.FromSeconds(3)))
+          using (ILockObject innerLockObject = await _lockFactory.AcquireLockAsync(_lockKey, TimeSpan.FromSeconds(5), 2, TimeSpan.FromSeconds(2), ctSource.Token))
+            Console.WriteLine($"Did I get a lock? -> {innerLockObject.IsAcquired}");
+        }
+      }
+      catch (OperationCanceledException)
+      {
+        Console.WriteLine("I expected for an OperationCanceledException.");
+      }
+
+      // --> #4 Dinner is ready to eat.
       Parallel.For(0, 5, x => personEat(x));
 
       Console.WriteLine("End of the dinner.");

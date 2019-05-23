@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace PlayingWithDistributedLock
 {
@@ -26,6 +28,36 @@ namespace PlayingWithDistributedLock
       try
       {
         return _externalLockFactory.AcquireLock(key, expiration, retryCount, sleepDuration);
+      }
+      catch (LockFactoryException ex)
+      {
+        // Log.
+        Console.WriteLine($"External LockFactory error: '{ex.Message}'");
+
+        return new DummyLockObject();
+      }
+      finally
+      {
+        stopwatch.Stop();
+
+        //Console.WriteLine($"Elapsed: {stopwatch.Elapsed}");
+      }
+    }
+
+    public async Task<ILockObject> AcquireLockAsync(
+      string key,
+      TimeSpan expiration,
+      int retryCount                = 0,
+      TimeSpan sleepDuration        = default,
+      CancellationToken cancelToken = default)
+    {
+      // For test purpose.
+      Stopwatch stopwatch = new Stopwatch();
+      stopwatch.Start();
+
+      try
+      {
+        return await _externalLockFactory.AcquireLockAsync(key, expiration, retryCount, sleepDuration, cancelToken);
       }
       catch (LockFactoryException ex)
       {

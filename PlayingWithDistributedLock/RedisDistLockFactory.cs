@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Polly;
+using Polly.Retry;
 using StackExchange.Redis;
 
 namespace PlayingWithDistributedLock
@@ -39,6 +42,47 @@ namespace PlayingWithDistributedLock
       try
       {
         isSuccess = waitAndRetryPolicy.Execute(() => _database.StringSet(key, value, expiration, When.NotExists));
+      }
+      catch (Exception ex)
+      {
+        throw new LockFactoryException($"Failed to set the key('{key}') to acquiring a lock.", ex);
+      }
+
+      return isSuccess ? new LockObject(this, key, value) : new LockObject();
+    }
+
+    public async Task<ILockObject> AcquireLockAsync(
+      string key,
+      TimeSpan expiration,
+      int retryCount                = 0,
+      TimeSpan sleepDuration        = default,
+      CancellationToken cancelToken = default)
+    {
+      if (string.IsNullOrWhiteSpace(key))
+        throw new ArgumentException("Key can not be null or empty.");
+
+      if (expiration <= TimeSpan.Zero)
+        throw new ArgumentOutOfRangeException(nameof(expiration), "Value must be greater than zero.");
+
+      if (retryCount < 0)
+        throw new ArgumentOutOfRangeException(nameof(retryCount), "Value must be greater than or equal to zero.");
+
+      AsyncRetryPolicy<bool> waitAndRetryPolicy = Policy
+        .HandleResult<bool>(x => x == false)
+        .WaitAndRetryAsync(retryCount, _ => sleepDuration);
+
+      string value = Guid.NewGuid().ToString();
+
+      bool isSuccess;
+
+      try
+      {
+        isSuccess = await waitAndRetryPolicy.ExecuteAsync(
+          _ => _database.StringSetAsync(key, value, expiration, When.NotExists), cancelToken);
+      }
+      catch (OperationCanceledException)
+      {
+        throw;
       }
       catch (Exception ex)
       {
@@ -104,10 +148,6 @@ namespace PlayingWithDistributedLock
         try
         {
           return _lockFactory.releaseLock(_keyValue.Key, _keyValue.Value);
-        }
-        catch (Exception ex)
-        {
-          throw new LockFactoryException($"Failed to release the lock for the key('{_keyValue.Key}').", ex);
         }
         finally
         {
