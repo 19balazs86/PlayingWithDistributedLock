@@ -35,14 +35,7 @@ namespace PlayingWithDistributedLock
 
     public ILockObject AcquireLock(string key, TimeSpan expiration, int retryCount = 0, TimeSpan sleepDuration = default)
     {
-      if (string.IsNullOrWhiteSpace(key))
-        throw new ArgumentException("Key can not be null or empty.");
-
-      if (expiration <= TimeSpan.Zero)
-        throw new ArgumentOutOfRangeException(nameof(expiration), "Value must be greater than zero.");
-
-      if (retryCount < 0)
-        throw new ArgumentOutOfRangeException(nameof(retryCount), "Value must be greater than or equal to zero.");
+      validateFields(key, expiration, retryCount);
 
       Policy<bool> waitAndRetryPolicy = Policy
         .HandleResult<bool>(x => x == false)
@@ -71,14 +64,7 @@ namespace PlayingWithDistributedLock
       TimeSpan sleepDuration        = default,
       CancellationToken cancelToken = default)
     {
-      if (string.IsNullOrWhiteSpace(key))
-        throw new ArgumentException("Key can not be null or empty.");
-
-      if (expiration <= TimeSpan.Zero)
-        throw new ArgumentOutOfRangeException(nameof(expiration), "Value must be greater than zero.");
-
-      if (retryCount < 0)
-        throw new ArgumentOutOfRangeException(nameof(retryCount), "Value must be greater than or equal to zero.");
+      validateFields(key, expiration, retryCount);
 
       AsyncRetryPolicy<bool> waitAndRetryPolicy = Policy
         .HandleResult<bool>(x => x == false)
@@ -123,6 +109,18 @@ namespace PlayingWithDistributedLock
       {
         throw new LockFactoryException($"Failed to delete the key('{key}') to release the lock.", ex);
       }
+    }
+
+    private static void validateFields(string key, TimeSpan expiration, int retryCount)
+    {
+      if (string.IsNullOrWhiteSpace(key))
+        throw new ArgumentException("Key can not be null or empty.");
+
+      if (expiration <= TimeSpan.Zero)
+        throw new ArgumentOutOfRangeException(nameof(expiration), "Value must be greater than zero.");
+
+      if (retryCount < 0)
+        throw new ArgumentOutOfRangeException(nameof(retryCount), "Value must be greater than or equal to zero.");
     }
 
     /// <summary>
