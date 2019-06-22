@@ -111,6 +111,18 @@ namespace PlayingWithDistributedLock
       }
     }
 
+    private async Task<bool> releaseLockAsync(string key, string value, CancellationToken cancelToken = default)
+    {
+      try
+      {
+        return (bool) await _database.ScriptEvaluateAsync(_RELEASE_LOCK_SCRIPT, new RedisKey[] { key }, new RedisValue[] { value });
+      }
+      catch (Exception ex)
+      {
+        throw new LockFactoryException($"Failed to delete the key('{key}') to release the lock.", ex);
+      }
+    }
+
     private static void validateFields(string key, TimeSpan expiration, int retryCount)
     {
       if (string.IsNullOrWhiteSpace(key))
