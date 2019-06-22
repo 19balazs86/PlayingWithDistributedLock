@@ -1,7 +1,7 @@
 # Playing with distributed locks using Redis
 
 This small .Net Core application is an example to acquire locks in a distributed system.
-Nowadays, you can easily scale your (microservcies) system and you can have shared resources.
+Nowadays, you can easily scale your (microservices) system and you can have shared resources.
 
 The good old solution, using the lock statement is not appropriate to manage the accessibility between distributed applications.
 
