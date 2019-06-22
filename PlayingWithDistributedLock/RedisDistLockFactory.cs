@@ -13,14 +13,14 @@ namespace PlayingWithDistributedLock
     #region Fields
     // Use Lua script to execute GET and DEL command at a time.
     // https://redis.io/commands/eval
-    private static string _releaseLockScript => @"
-        if (redis.call('GET', KEYS[1]) == ARGV[1])
-        then
-          redis.call('DEL', KEYS[1]);
-          return true;
-        else
-          return false;
-        end";
+    private const string _RELEASE_LOCK_SCRIPT = @"
+      if (redis.call('GET', KEYS[1]) == ARGV[1])
+      then
+        redis.call('DEL', KEYS[1]);
+        return true;
+      else
+        return false;
+      end";
 
     private readonly Lazy<IDatabase> _lazyDatabase;
 
@@ -103,7 +103,7 @@ namespace PlayingWithDistributedLock
     {
       try
       {
-        return (bool) _database.ScriptEvaluate(_releaseLockScript, new RedisKey[] { key }, new RedisValue[] { value });
+        return (bool) _database.ScriptEvaluate(_RELEASE_LOCK_SCRIPT, new RedisKey[] { key }, new RedisValue[] { value });
       }
       catch (Exception ex)
       {
