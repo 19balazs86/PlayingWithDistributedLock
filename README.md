@@ -15,6 +15,29 @@ The good old solution, using the lock statement is not appropriate to manage the
 >  [Distributed caching in ASP.NET Core](https://docs.microsoft.com/en-ie/aspnet/core/performance/caching/distributed?view=aspnetcore-2.2 "Distributed caching in ASP.NET Core") is another useful tool. [EasyCaching Provider.](https://www.c-sharpcorner.com/article/using-easycaching-to-handle-multiple-instance-of-caching-providers "EasyCaching Provider.")
 >  You can find some inline comments in the code.
 
+#### Code snippets
+```csharp
+public interface ILockFactory
+{
+    ILockObject AcquireLock(string key, TimeSpan expiration, int retryCount = 0, TimeSpan sleepDuration = default);
+    
+    Task<ILockObject> AcquireLockAsync(string key, TimeSpan expiration, int retryCount = 0, TimeSpan sleepDuration = default, CancellationToken cancelToken = default);
+}
+```
+
+```csharp
+public interface ILockObject : IDisposable
+{
+    // Did I get a lock or not?
+    bool IsAcquired { get; }
+
+    // Release the lock, if it still exists and returns true, otherwise false.
+    bool Release();
+
+    Task<bool> ReleaseAsync();
+}
+```
+
 #### Setup a redis server on Windows.
 
 1. Download the redis server (zip version) from [MicrosoftArchive/redis/releases](https://github.com/MicrosoftArchive/redis/releases "MicrosoftArchive/redis/releases")
