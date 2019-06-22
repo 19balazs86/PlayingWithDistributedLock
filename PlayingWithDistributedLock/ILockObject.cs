@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace PlayingWithDistributedLock
 {
@@ -14,5 +15,7 @@ namespace PlayingWithDistributedLock
     /// </summary>
     /// <returns>Return true, if we own the existing lock. Otherwise false.</returns>
     bool Release();
+
+    Task<bool> ReleaseAsync();
   }
 }

@@ -111,7 +111,7 @@ namespace PlayingWithDistributedLock
       }
     }
 
-    private async Task<bool> releaseLockAsync(string key, string value, CancellationToken cancelToken = default)
+    private async Task<bool> releaseLockAsync(string key, string value)
     {
       try
       {
@@ -160,6 +160,20 @@ namespace PlayingWithDistributedLock
         try
         {
           return _lockFactory.releaseLock(_keyValue.Key, _keyValue.Value);
+        }
+        finally
+        {
+          _lockFactory = null; // No need to release it more times.
+        }
+      }
+
+      public async Task<bool> ReleaseAsync()
+      {
+        if (!IsAcquired) return false;
+
+        try
+        {
+          return await _lockFactory.releaseLockAsync(_keyValue.Key, _keyValue.Value);
         }
         finally
         {

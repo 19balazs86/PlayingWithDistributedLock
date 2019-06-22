@@ -88,7 +88,10 @@ namespace PlayingWithDistributedLock
         return true;
       }
 
+      public Task<bool> ReleaseAsync() => Task.FromResult(Release());
+
       public void Dispose() => Release();
+
     }
   }
 }
