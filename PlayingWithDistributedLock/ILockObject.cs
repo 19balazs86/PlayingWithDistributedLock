@@ -11,9 +11,8 @@ namespace PlayingWithDistributedLock
     bool IsAcquired { get; }
 
     /// <summary>
-    /// Release the lock, if our one is still exists.
+    /// Release the lock, if it still exists and returns true, otherwise false.
     /// </summary>
-    /// <returns>Return true, if we own the existing lock. Otherwise false.</returns>
     bool Release();
 
     Task<bool> ReleaseAsync();
