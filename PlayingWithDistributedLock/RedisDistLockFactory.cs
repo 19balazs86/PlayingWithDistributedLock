@@ -47,7 +47,9 @@ namespace PlayingWithDistributedLock
 
       try
       {
-        isSuccess = waitAndRetryPolicy.Execute(() => _database.StringSet(key, value, expiration, When.NotExists));
+        isSuccess = waitAndRetryPolicy.Execute(() => _database.LockTake(key, value, expiration));
+
+        //isSuccess = waitAndRetryPolicy.Execute(() => _database.StringSet(key, value, expiration, When.NotExists));
       }
       catch (Exception ex)
       {
@@ -77,7 +79,10 @@ namespace PlayingWithDistributedLock
       try
       {
         isSuccess = await waitAndRetryPolicy.ExecuteAsync(
-          _ => _database.StringSetAsync(key, value, expiration, When.NotExists), cancelToken);
+          _ => _database.LockTakeAsync(key, value, expiration), cancelToken);
+
+        //isSuccess = await waitAndRetryPolicy.ExecuteAsync(
+        //  _ => _database.StringSetAsync(key, value, expiration, When.NotExists), cancelToken);
       }
       catch (OperationCanceledException)
       {
@@ -103,7 +108,9 @@ namespace PlayingWithDistributedLock
     {
       try
       {
-        return (bool) _database.ScriptEvaluate(_RELEASE_LOCK_SCRIPT, new RedisKey[] { key }, new RedisValue[] { value });
+        return _database.LockRelease(key, value);
+
+        //return (bool) _database.ScriptEvaluate(_RELEASE_LOCK_SCRIPT, new RedisKey[] { key }, new RedisValue[] { value });
       }
       catch (Exception ex)
       {
@@ -115,7 +122,9 @@ namespace PlayingWithDistributedLock
     {
       try
       {
-        return (bool) await _database.ScriptEvaluateAsync(_RELEASE_LOCK_SCRIPT, new RedisKey[] { key }, new RedisValue[] { value });
+        return await _database.LockReleaseAsync(key, value);
+
+        //return (bool) await _database.ScriptEvaluateAsync(_RELEASE_LOCK_SCRIPT, new RedisKey[] { key }, new RedisValue[] { value });
       }
       catch (Exception ex)
       {
