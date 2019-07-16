@@ -7,13 +7,18 @@ The good old solution, using the lock statement is not appropriate to manage the
 
 #### Resources
 
-- C# Corner: [Creating Distributed Lock With Redis In .NET Core](https://www.c-sharpcorner.com/article/creating-distributed-lock-with-redis-in-net-core "Creating Distributed Lock With Redis In .NET Core").
-- Other .NET solutions on the [official page](https://redis.io/topics/distlock "official page"). 
-- [Observer design pattern](https://docs.microsoft.com/en-us/dotnet/standard/events/observer-design-pattern "Observer design pattern") unsubscribe mechanism to release the lock.
-- I used the [Polly library](https://github.com/App-vNext/Polly "Polly library") to wait and retry to acquire a lock.
+- C# Corner: [Creating Distributed Lock With Redis In .NET Core](https://www.c-sharpcorner.com/article/creating-distributed-lock-with-redis-in-net-core).
+- [An example](http://taswar.zeytinsoft.com/redis-running-in-docker/) of using different data types (string, hash, list).
+- Other solutions on the [official page](https://redis.io/topics/distlock). 
+- [Observer design pattern](https://docs.microsoft.com/en-us/dotnet/standard/events/observer-design-pattern) unsubscribe mechanism to release the lock.
+- Using the [Polly library](https://github.com/App-vNext/Polly) to wait and retry to acquire a lock.
 
->  [Distributed caching in ASP.NET Core](https://docs.microsoft.com/en-ie/aspnet/core/performance/caching/distributed?view=aspnetcore-2.2 "Distributed caching in ASP.NET Core") is another useful tool. [EasyCaching Provider.](https://www.c-sharpcorner.com/article/using-easycaching-to-handle-multiple-instance-of-caching-providers "EasyCaching Provider.")
->  You can find some inline comments in the code.
+#### Clients
+
+- [StackExchange.Redis](https://github.com/StackExchange/StackExchange.Redis): Most popular client. Interface for [IDatabase](https://github.com/StackExchange/StackExchange.Redis/blob/master/src/StackExchange.Redis/Interfaces/IDatabase.cs).
+- [StackExchange.Redis.Extensions](https://github.com/imperugo/StackExchange.Redis.Extensions): This library extends StackExchange.Redis. [IRedisDatabase](https://github.com/imperugo/StackExchange.Redis.Extensions/blob/master/src/StackExchange.Redis.Extensions.Core/Abstractions/IRedisDatabase.cs).
+
+>  [Distributed caching in ASP.NET Core](https://docs.microsoft.com/en-ie/aspnet/core/performance/caching/distributed?view=aspnetcore-2.2) is another useful tool.
 
 #### Code snippets
 ```csharp
@@ -40,11 +45,11 @@ public interface ILockObject : IDisposable
 
 #### Setup a redis server on Windows.
 
-1. Download the redis server (zip version) from [MicrosoftArchive/redis/releases](https://github.com/MicrosoftArchive/redis/releases "MicrosoftArchive/redis/releases")
+1. Download the redis server (zip version) from [MicrosoftArchive/redis/releases](https://github.com/MicrosoftArchive/redis/releases)
 2. Run the server: redis-server.exe
-3. Run the client (optional): redis-cli.exe | [Redis commands](https://redis.io/commands "Redis commands")
+3. Run the client (optional): redis-cli.exe | [Redis commands](https://redis.io/commands)
 
-[Chocolatey Galery](https://chocolatey.org/packages/redis-64 "Chocolatey Galery") another easy and fast way to get a redis.
+Install it from: [Chocolatey Galery](https://chocolatey.org/packages/redis-64).
 
 #### This flowchart is represent the steps.
 
