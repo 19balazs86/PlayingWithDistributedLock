@@ -15,10 +15,10 @@ The good old solution, using the lock statement is not appropriate to manage the
 
 #### Clients
 
-- [StackExchange.Redis](https://github.com/StackExchange/StackExchange.Redis): Most popular client. Interface for [IDatabase](https://github.com/StackExchange/StackExchange.Redis/blob/master/src/StackExchange.Redis/Interfaces/IDatabase.cs).
+- [StackExchange.Redis](https://github.com/StackExchange/StackExchange.Redis): Most popular and stable client. Interface for [IDatabase](https://github.com/StackExchange/StackExchange.Redis/blob/master/src/StackExchange.Redis/Interfaces/IDatabase.cs).
 - [StackExchange.Redis.Extensions](https://github.com/imperugo/StackExchange.Redis.Extensions): This library extends StackExchange.Redis. [IRedisDatabase](https://github.com/imperugo/StackExchange.Redis.Extensions/blob/master/src/StackExchange.Redis.Extensions.Core/Abstractions/IRedisDatabase.cs).
 
->  [Distributed caching in ASP.NET Core](https://docs.microsoft.com/en-ie/aspnet/core/performance/caching/distributed?view=aspnetcore-2.2) is another useful tool.
+>  Try out [distributed cache with Redis](https://github.com/19balazs86/PlayingWithDistributedCaching).
 
 #### Code snippets
 ```csharp
