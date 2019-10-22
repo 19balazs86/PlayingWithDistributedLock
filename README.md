@@ -7,11 +7,12 @@ The good old solution, using the lock statement is not appropriate to manage the
 
 #### Resources
 
-- C# Corner: [Creating Distributed Lock With Redis In .NET Core](https://www.c-sharpcorner.com/article/creating-distributed-lock-with-redis-in-net-core).
-- [An example](http://taswar.zeytinsoft.com/redis-running-in-docker/) of using different data types (string, hash, list).
-- Other solutions on the [official page](https://redis.io/topics/distlock). 
-- [Observer design pattern](https://docs.microsoft.com/en-us/dotnet/standard/events/observer-design-pattern) unsubscribe mechanism to release the lock.
-- Using the [Polly library](https://github.com/App-vNext/Polly) to wait and retry to acquire a lock.
+- [Everything I Know About Distributed Locks](https://dzone.com/articles/everything-i-know-about-distributed-locks) *(DZone-Davide Cerbo)*
+- [Creating Distributed Lock With Redis In .NET Core](https://www.c-sharpcorner.com/article/creating-distributed-lock-with-redis-in-net-core) *(C# Corner)*
+- [Examples](http://taswar.zeytinsoft.com/redis-running-in-docker/) of using different data types (string, hash, list) in Redis
+- [Distributed locks with Redis](https://redis.io/topics/distlock) *(official Redis page)* 
+- Using the [Observer design pattern](https://docs.microsoft.com/en-us/dotnet/standard/events/observer-design-pattern) for to release the lock
+- Using the [Polly library](https://github.com/App-vNext/Polly) to wait and retry to acquire a lock
 
 #### Clients
 
