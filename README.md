@@ -1,16 +1,17 @@
 # Playing with distributed locks using Redis
 
-This small .Net Core application is an example to acquire locks in a distributed system.
-Nowadays, you can easily scale your (microservices) system and you can have shared resources.
+This small .Net Core application is an example to acquire locks in a distributed environment.
 
-The good old solution, using the lock statement is not appropriate to manage the accessibility between distributed applications.
+Using the lock statement is not appropriate to manage the accessibility between distributed applications.
+
+> Personally, I prefer to use [Azure Service Bus with SessionQueue feature](https://github.com/19balazs86/AzureServiceBus) in order to avoid race conditions.
 
 #### Resources
 
 - [Everything I Know About Distributed Locks](https://dzone.com/articles/everything-i-know-about-distributed-locks) *(DZone-Davide Cerbo)*
 - [Creating Distributed Lock With Redis In .NET Core](https://www.c-sharpcorner.com/article/creating-distributed-lock-with-redis-in-net-core) *(C# Corner)*
 - [Examples](http://taswar.zeytinsoft.com/redis-running-in-docker/) of using different data types (string, hash, list) in Redis
-- [Distributed locks with Redis](https://redis.io/topics/distlock) *(official Redis page)* 
+- [Distributed locks with Redis](https://redis.io/topics/distlock) *(Official Redis page)* 
 - Using the [Observer design pattern](https://docs.microsoft.com/en-us/dotnet/standard/events/observer-design-pattern) for to release the lock
 - Using the [Polly library](https://github.com/App-vNext/Polly) to wait and retry to acquire a lock
 
