@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Polly;
+﻿using Polly;
 
 namespace PlayingWithDistributedLock
 {
@@ -61,7 +57,7 @@ namespace PlayingWithDistributedLock
     private static void personEat(int personId)
     {
       string person = $"Person({personId})";
-      
+
       // Try to acquire a lock maximum 5 times.
       ILockObject lockObject = _waitAndRetryPolicy
         .Execute(
