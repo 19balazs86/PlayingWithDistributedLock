@@ -19,6 +19,7 @@ Using the lock statement is not appropriate to manage the accessibility between 
 
 - [StackExchange.Redis](https://github.com/StackExchange/StackExchange.Redis): Most popular and stable client. Interface for [IDatabase](https://github.com/StackExchange/StackExchange.Redis/blob/master/src/StackExchange.Redis/Interfaces/IDatabase.cs).
 - [StackExchange.Redis.Extensions](https://github.com/imperugo/StackExchange.Redis.Extensions): This library extends StackExchange.Redis. [IRedisDatabase](https://github.com/imperugo/StackExchange.Redis.Extensions/blob/master/src/StackExchange.Redis.Extensions.Core/Abstractions/IRedisDatabase.cs).
+- [RedLock.net](https://github.com/samcook/RedLock.net) *(Github source code)* - An implementation of a distributed lock algorithm
 
 >  Try out [distributed cache with Redis](https://github.com/19balazs86/PlayingWithDistributedCaching).
 

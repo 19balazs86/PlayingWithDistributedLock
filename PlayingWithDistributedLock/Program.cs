@@ -16,7 +16,7 @@ namespace PlayingWithDistributedLock
             .HandleResult<ILockObject>(lo => lo.IsAcquired == false) // When we did not get a lock.
             .WaitAndRetryAsync(4, // 1 + 4 times retry.
                 _ => TimeSpan.FromMilliseconds(_random.Next(1200, 1500)),
-                (res, ts, ctx) => Console.WriteLine($"{ctx["person"]} is waiting for retry - {ts.TotalMilliseconds} ms."));
+                (res, ts, ctx) => Console.WriteLine($"{ctx["person"]} is waiting for retry - {ts.TotalMilliseconds:N0} ms."));
 
         /// <summary>
         /// Main
@@ -52,6 +52,11 @@ namespace PlayingWithDistributedLock
             await Parallel.ForEachAsync(Enumerable.Range(1, 4), (personId, ct) => personEat(personId));
 
             Console.WriteLine("End of the dinner.");
+
+            Console.WriteLine("--- Start with RedLock ---");
+
+            using var redLockEating = new RedLockEating();
+            await redLockEating.Start();
         }
 
         private static async ValueTask personEat(int personId)
@@ -67,7 +72,7 @@ namespace PlayingWithDistributedLock
             if (lockObject.IsAcquired)
             {
                 // We got a lock.
-                Console.WriteLine($"{person} begin eat food.");
+                Console.WriteLine($"{person} begin to eat.");
 
                 await Task.Delay(1_000);
 
@@ -80,7 +85,7 @@ namespace PlayingWithDistributedLock
                 }
                 else Console.WriteLine($"{person} did not release lock.");
             }
-            else Console.WriteLine($"{person} did not get food.");
+            else Console.WriteLine($"{person} did not get any food.");
         }
     }
 }
