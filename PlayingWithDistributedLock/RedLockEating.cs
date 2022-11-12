@@ -35,7 +35,7 @@ namespace PlayingWithDistributedLock
 
             if (lockObject.IsAcquired)
             {
-                // Note: _expiryTime is 2 seconds. It can be extended, if needed.
+                // Note: _expiryTime is 2 seconds. It will be extended automatically if needed.
                 int millisecondsDelay = Random.Shared.Next(1_000, 3_000);
 
                 Console.WriteLine($"{person} begin to eat and wait milliseconds ({millisecondsDelay:N0}).");
