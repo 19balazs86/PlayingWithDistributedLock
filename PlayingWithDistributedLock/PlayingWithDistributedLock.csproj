@@ -10,7 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Polly" Version="7.2.3" />
     <PackageReference Include="RedLock.net" Version="2.3.2" />
-    <PackageReference Include="StackExchange.Redis" Version="2.6.70" />
+    <PackageReference Include="StackExchange.Redis" Version="2.6.80" />
   </ItemGroup>
 
 </Project>
