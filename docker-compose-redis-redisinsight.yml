@@ -1,0 +1,21 @@
+version: '3.4'
+
+services:
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    volumes:
+      - redisDB:/data
+      
+  redisinsight:
+    depends_on: ["redis"]
+    image: redislabs/redisinsight:latest
+    ports:
+      - '8001:8001'
+    volumes:
+      - redisinsightDB:/db
+      
+volumes:
+  redisDB:
+  redisinsightDB:
