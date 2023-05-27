@@ -1,25 +1,21 @@
 # Playing with distributed locks using Redis
 
-This small .Net Core application is an example to acquire locks in a distributed environment.
+This small .NET application is an example of acquiring locks in a distributed environment.
 
-Using the lock statement is not appropriate to manage the accessibility between distributed applications.
-
-> Personally, I prefer to use [Azure Service Bus with SessionQueue feature](https://github.com/19balazs86/AzureServiceBus) in order to avoid race conditions.
+> I prefer using [Azure Service Bus with the SessionQueue feature](https://github.com/19balazs86/AzureServiceBus) to avoid race conditions and handle messages for the same resource.
 
 #### Resources
 
-- [Everything I Know About Distributed Locks](https://dzone.com/articles/everything-i-know-about-distributed-locks) *(DZone-Davide Cerbo)*
-- [Creating Distributed Lock With Redis In .NET Core](https://www.c-sharpcorner.com/article/creating-distributed-lock-with-redis-in-net-core) *(C# Corner)*
-- [Examples](http://taswar.zeytinsoft.com/redis-running-in-docker/) of using different data types (string, hash, list) in Redis
-- [Distributed locks with Redis](https://redis.io/topics/distlock) *(Official Redis page)* 
+- [Distributed locks with Redis](https://redis.io/topics/distlock) 📓*Official Redis page* 
 - Using the [Observer design pattern](https://docs.microsoft.com/en-us/dotnet/standard/events/observer-design-pattern) for to release the lock
 - Using the [Polly library](https://github.com/App-vNext/Polly) to wait and retry to acquire a lock
+- [Improve memory allocation](https://hashnode.devindran.com/how-to-improve-memory-allocation-when-using-stackexchangeredis) 📓*Devindran Ramadass - RecyclableMemoryStreamManager and ArrayPoolBufferWriter*
 
 #### Clients
 
-- [StackExchange.Redis](https://github.com/StackExchange/StackExchange.Redis): Most popular and stable client. Interface for [IDatabase](https://github.com/StackExchange/StackExchange.Redis/blob/master/src/StackExchange.Redis/Interfaces/IDatabase.cs).
-- [StackExchange.Redis.Extensions](https://github.com/imperugo/StackExchange.Redis.Extensions): This library extends StackExchange.Redis. [IRedisDatabase](https://github.com/imperugo/StackExchange.Redis.Extensions/blob/master/src/StackExchange.Redis.Extensions.Core/Abstractions/IRedisDatabase.cs).
-- [RedLock.net](https://github.com/samcook/RedLock.net) *(Github source code)* - An implementation of a distributed lock algorithm
+- [StackExchange.Redis 👤*Stack Overflow - Most popular and stable client. Interface for [IDatabase](https://github.com/StackExchange/StackExchange.Redis/blob/master/src/StackExchange.Redis/Interfaces/IDatabase.cs)*
+- [StackExchange.Redis.Extensions 👤*Ugo Lattanzi - This library extends StackExchange.Redis. [IRedisDatabase](https://github.com/imperugo/StackExchange.Redis.Extensions/blob/master/src/core/StackExchange.Redis.Extensions.Core/Abstractions/IRedisDatabase.cs)*
+- [RedLock.net](https://github.com/samcook/RedLock.net) 👤*Sam Cook - An implementation of a distributed lock algorithm*
 
 >  Try out [distributed cache with Redis](https://github.com/19balazs86/PlayingWithDistributedCaching).
 
