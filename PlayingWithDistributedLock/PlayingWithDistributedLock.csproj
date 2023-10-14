@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Polly" Version="7.2.4" />
+    <PackageReference Include="Polly" Version="8.0.0" />
     <PackageReference Include="RedLock.net" Version="2.3.2" />
     <PackageReference Include="StackExchange.Redis" Version="2.6.122" />
   </ItemGroup>
