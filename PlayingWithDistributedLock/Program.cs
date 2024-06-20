@@ -1,4 +1,5 @@
-﻿using Polly;
+﻿using PlayingWithDistributedLock.EatingExemple;
+using PlayingWithDistributedLock.Implementation;
 
 namespace PlayingWithDistributedLock;
 
@@ -6,15 +7,7 @@ public static class Program
 {
     private const string _lockKey = "lock:eat";
 
-    // Note: Read the description in the ExceptionToleranceLockFactory class.
     private static readonly ILockFactory _lockFactory = new ExceptionToleranceLockFactory(new RedisDistLockFactory());
-
-    private static readonly AsyncPolicy<ILockObject> _waitAndRetryPolicy = Policy
-        .HandleResult<ILockObject>(lo => lo.IsAcquired == false) // When we did not get a lock.
-        .WaitAndRetryAsync(4, // 1 + 4 times retry.
-            _ => TimeSpan.FromMilliseconds(Random.Shared.Next(1200, 1500)),
-            (res, ts, ctx) => Console.WriteLine($"{ctx["person"]} is waiting {ts.TotalMilliseconds:N0} ms for retry."));
-
 
     public static async Task Main(string[] args)
     {
@@ -43,46 +36,15 @@ public static class Program
             Console.WriteLine("I expected for an OperationCanceledException.");
         }
 
-        // --> #4 Dinner is ready to eat.
-        await Parallel.ForEachAsync(Enumerable.Range(1, 4), (personId, ct) => personEat(personId));
+        // --> #4 Dinner is ready to eat
+        Console.WriteLine("--- Start eating ---");
+        await EatingWithRedisDistLock.Create(_lockFactory).Start();
 
-        Console.WriteLine("End of the dinner.");
+        // --> #5 Dinner is ready to eat
+        Console.WriteLine("--- Start eating with RedLock ---");
 
-        Console.WriteLine("--- Start with RedLock ---");
-
-        using var redLockEating = new RedLockEating();
+        using var redLockEating = EatingWithRedLock.Create();
 
         await redLockEating.Start();
-    }
-
-    private static async ValueTask personEat(int personId)
-    {
-        string person = $"Person({personId})";
-
-        // Try to acquire a lock maximum 5 times.
-        ILockObject lockObject = await _waitAndRetryPolicy
-            .ExecuteAsync(
-                ctx => _lockFactory.AcquireLockAsync(_lockKey, TimeSpan.FromSeconds(5)),
-                new Dictionary<string, object> { ["person"] = person });
-
-        if (!lockObject.IsAcquired)
-        {
-            Console.WriteLine($"{person} did not get any food.");
-            return;
-        }
-
-        // We got a lock
-        Console.WriteLine($"{person} begin to eat.");
-
-        await Task.Delay(1_000);
-
-        // Try to release the lock.
-        if (Random.Shared.NextDouble() < 0.8)
-        {
-            await lockObject.ReleaseAsync();
-
-            Console.WriteLine($"{person} released the lock.");
-        }
-        else Console.WriteLine($"{person} did not release lock.");
     }
 }

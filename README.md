@@ -14,6 +14,7 @@ This small .NET application is an example of acquiring locks in a distributed en
 #### Clients
 
 - [StackExchange.Redis](https://github.com/StackExchange/StackExchange.Redis) 👤*Stack Overflow - Most popular and stable client. Interface for [IDatabase](https://github.com/StackExchange/StackExchange.Redis/blob/master/src/StackExchange.Redis/Interfaces/IDatabase.cs)*
+- [DistributedLock](https://github.com/madelson/DistributedLock) 👤Madelson - Supports various underlying technologies: Redis, Postgres, AzureBlob...
 - [RedLock.net](https://github.com/samcook/RedLock.net) 👤*Sam Cook - An implementation of a distributed lock algorithm*
 
 #### Code snippets

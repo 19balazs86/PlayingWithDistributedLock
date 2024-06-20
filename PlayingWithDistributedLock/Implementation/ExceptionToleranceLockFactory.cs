@@ -1,4 +1,4 @@
-﻿namespace PlayingWithDistributedLock;
+﻿namespace PlayingWithDistributedLock.Implementation;
 
 /// <summary>
 /// This class is meant to be a wrapper around the RedisDistLockFactory.
@@ -39,8 +39,8 @@ public sealed class ExceptionToleranceLockFactory : ILockFactory
     public async Task<ILockObject> AcquireLockAsync(
         string key,
         TimeSpan expiration,
-        int retryCount                = 0,
-        TimeSpan sleepDuration        = default,
+        int retryCount = 0,
+        TimeSpan sleepDuration = default,
         CancellationToken cancelToken = default)
     {
         // For test purpose

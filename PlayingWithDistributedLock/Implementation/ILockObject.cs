@@ -1,4 +1,4 @@
-﻿namespace PlayingWithDistributedLock;
+﻿namespace PlayingWithDistributedLock.Implementation;
 
 public interface ILockObject : IDisposable
 {

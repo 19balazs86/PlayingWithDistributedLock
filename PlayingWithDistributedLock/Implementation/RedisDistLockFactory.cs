@@ -2,7 +2,7 @@
 using Polly.Retry;
 using StackExchange.Redis;
 
-namespace PlayingWithDistributedLock;
+namespace PlayingWithDistributedLock.Implementation;
 
 public sealed class RedisDistLockFactory : ILockFactory
 {
@@ -25,7 +25,7 @@ public sealed class RedisDistLockFactory : ILockFactory
 
     public RedisDistLockFactory(string connString = "127.0.0.1:6379")
     {
-        _lazyDatabase = new Lazy<IDatabase>(()=> ConnectionMultiplexer.Connect(connString).GetDatabase());
+        _lazyDatabase = new Lazy<IDatabase>(() => ConnectionMultiplexer.Connect(connString).GetDatabase());
     }
 
     public ILockObject AcquireLock(string key, TimeSpan expiration, int retryCount = 0, TimeSpan sleepDuration = default)
@@ -57,8 +57,8 @@ public sealed class RedisDistLockFactory : ILockFactory
     public async Task<ILockObject> AcquireLockAsync(
         string key,
         TimeSpan expiration,
-        int retryCount                = 0,
-        TimeSpan sleepDuration        = default,
+        int retryCount = 0,
+        TimeSpan sleepDuration = default,
         CancellationToken cancelToken = default)
     {
         validateFields(key, expiration, retryCount);
@@ -151,7 +151,7 @@ public sealed class RedisDistLockFactory : ILockFactory
         internal LockObject(RedisDistLockFactory lockFactory, string key, string value)
         {
             _lockFactory = lockFactory;
-            _keyValue    = KeyValuePair.Create(key, value);
+            _keyValue = KeyValuePair.Create(key, value);
         }
 
         public bool Release()

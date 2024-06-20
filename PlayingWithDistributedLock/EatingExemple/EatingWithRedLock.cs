@@ -3,23 +3,28 @@ using RedLockNet.SERedis;
 using RedLockNet.SERedis.Configuration;
 using System.Net;
 
-namespace PlayingWithDistributedLock;
+namespace PlayingWithDistributedLock.EatingExemple;
 
-public sealed class RedLockEating : IDisposable
+public sealed class EatingWithRedLock : IDisposable
 {
     private readonly TimeSpan _expiryTime = TimeSpan.FromSeconds(2);
-    private readonly TimeSpan _waitTime   = TimeSpan.FromSeconds(15);
-    private readonly TimeSpan _retryTime  = TimeSpan.FromSeconds(1);
+    private readonly TimeSpan _waitTime = TimeSpan.FromSeconds(15);
+    private readonly TimeSpan _retryTime = TimeSpan.FromSeconds(1);
 
     private const string _lockKey = "RedLockEating";
 
     private readonly RedLockFactory _redLockFactory;
 
-    public RedLockEating()
+    public EatingWithRedLock()
     {
         var redisEndpoints = new List<RedLockEndPoint> { new DnsEndPoint("127.0.0.1", 6379) };
 
         _redLockFactory = RedLockFactory.Create(redisEndpoints);
+    }
+
+    public static EatingWithRedLock Create()
+    {
+        return new EatingWithRedLock();
     }
 
     public async Task Start()
