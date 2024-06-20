@@ -45,7 +45,6 @@ public interface ILockObject : IDisposable
    1. [Redis-windows](https://github.com/zkteco-home/redis-windows) 👤*zkteco-home*
    2. [MicrosoftArchive/redis/releases](https://github.com/MicrosoftArchive/redis/releases) 👤*Microsoft Archive*
    3. Install it from: [Chocolatey Galery](https://community.chocolatey.org/packages/redis)
-
 2. Run the server: redis-server.exe *| Connection string: "127.0.0.1:6379"*
 3. Run the client (optional): redis-cli.exe | [Redis commands](https://redis.io/commands)
 
