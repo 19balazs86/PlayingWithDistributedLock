@@ -8,16 +8,13 @@ This small .NET application is an example of acquiring locks in a distributed en
 
 - [Distributed locks with Redis](https://redis.io/topics/distlock) 📓*Official Redis page* 
 - Using the [Observer design pattern](https://docs.microsoft.com/en-us/dotnet/standard/events/observer-design-pattern) for to release the lock
-- Using the [Polly library](https://github.com/App-vNext/Polly) to wait and retry to acquire a lock
+- Using the [Polly](https://www.pollydocs.org) to wait and retry to acquire a lock
 - [Improve memory allocation](https://hashnode.devindran.com/how-to-improve-memory-allocation-when-using-stackexchangeredis) 📓*Devindran Ramadass - RecyclableMemoryStreamManager and ArrayPoolBufferWriter*
 
 #### Clients
 
-- [StackExchange.Redis 👤*Stack Overflow - Most popular and stable client. Interface for [IDatabase](https://github.com/StackExchange/StackExchange.Redis/blob/master/src/StackExchange.Redis/Interfaces/IDatabase.cs)*
-- [StackExchange.Redis.Extensions 👤*Ugo Lattanzi - This library extends StackExchange.Redis. [IRedisDatabase](https://github.com/imperugo/StackExchange.Redis.Extensions/blob/master/src/core/StackExchange.Redis.Extensions.Core/Abstractions/IRedisDatabase.cs)*
+- [StackExchange.Redis](https://github.com/StackExchange/StackExchange.Redis) 👤*Stack Overflow - Most popular and stable client. Interface for [IDatabase](https://github.com/StackExchange/StackExchange.Redis/blob/master/src/StackExchange.Redis/Interfaces/IDatabase.cs)*
 - [RedLock.net](https://github.com/samcook/RedLock.net) 👤*Sam Cook - An implementation of a distributed lock algorithm*
-
->  Try out [distributed cache with Redis](https://github.com/19balazs86/PlayingWithDistributedCaching).
 
 #### Code snippets
 ```csharp
@@ -42,14 +39,16 @@ public interface ILockObject : IDisposable
 }
 ```
 
-#### Setup a redis server on Windows.
+#### Setup: Redis server on Windows
 
-1. Download the redis server (zip version) from [MicrosoftArchive/redis/releases](https://github.com/MicrosoftArchive/redis/releases)
-2. Run the server: redis-server.exe
+1. Download the redis server
+   1. [Redis-windows](https://github.com/zkteco-home/redis-windows) 👤*zkteco-home*
+   2. [MicrosoftArchive/redis/releases](https://github.com/MicrosoftArchive/redis/releases) 👤*Microsoft Archive*
+   3. Install it from: [Chocolatey Galery](https://community.chocolatey.org/packages/redis)
+
+2. Run the server: redis-server.exe *| Connection string: "127.0.0.1:6379"*
 3. Run the client (optional): redis-cli.exe | [Redis commands](https://redis.io/commands)
 
-Install it from: [Chocolatey Galery](https://chocolatey.org/packages/redis-64).
-
-#### This flowchart is represent the steps.
+#### This flowchart is represent the steps
 
 ![Flowchart](Flowchart.JPG)

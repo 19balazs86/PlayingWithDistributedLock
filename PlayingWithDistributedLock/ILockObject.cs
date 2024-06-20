@@ -1,10 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿namespace PlayingWithDistributedLock;
 
-namespace PlayingWithDistributedLock
+public interface ILockObject : IDisposable
 {
-  public interface ILockObject : IDisposable
-  {
     /// <summary>
     /// Did I get a lock or not?
     /// </summary>
@@ -16,5 +13,4 @@ namespace PlayingWithDistributedLock
     bool Release();
 
     Task<bool> ReleaseAsync();
-  }
 }

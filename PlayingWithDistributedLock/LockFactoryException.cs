@@ -1,9 +1,7 @@
-﻿using System;
+﻿namespace PlayingWithDistributedLock;
 
-namespace PlayingWithDistributedLock
+public class LockFactoryException : Exception
 {
-  public class LockFactoryException : Exception
-  {
     public LockFactoryException()
     {
     }
@@ -15,5 +13,4 @@ namespace PlayingWithDistributedLock
     public LockFactoryException(string message, Exception innerException) : base(message, innerException)
     {
     }
-  }
 }
